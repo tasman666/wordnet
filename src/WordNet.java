@@ -17,9 +17,13 @@ public class WordNet {
     public WordNet(String synsets, String hypernyms) {
         loadSynsets(synsets);
         createDigraph(hypernyms);
-        if (hasMoreThanOneRoot()) {
+        if (hasMoreThanOneRoot() || hasCycle()) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private boolean hasCycle() {
+        return new DirectedCycle(digraph).hasCycle();
     }
 
     private boolean hasMoreThanOneRoot() {
