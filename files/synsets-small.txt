@@ -1,0 +1,4 @@
+0,chocolate_bar,a bar of chocolate candy
+1,chocolate_cake,cake containing chocolate
+2,chocolate_candy,candy made with chocolate
+3,chocolate_chip_cookie Toll_House_cookie,cookies containing chocolate chips
