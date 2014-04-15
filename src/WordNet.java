@@ -10,6 +10,7 @@ public class WordNet {
     private Map<Integer, String> synsetsIdMap = new HashMap<Integer, String>();
     private Set<String> nouns = new HashSet<String>();
     private Digraph digraph;
+    private SAP sap;
 
     // constructor takes the name of the two input files
     public WordNet(String synsets, String hypernyms) {
@@ -26,6 +27,7 @@ public class WordNet {
                 digraph.addEdge(Integer.valueOf(lineValues[0]), Integer.valueOf(lineValues[i]));
             }
         }
+        sap = new SAP(digraph);
     }
 
     private void loadSynsets(String synsets) {
@@ -66,7 +68,7 @@ public class WordNet {
         if (isNoun(nounA) == false || isNoun(nounB) == false) {
             throw new IllegalArgumentException("not proper noun");
         }
-        return new SAP(digraph).length(synsetsMap.get(nounA),synsetsMap.get(nounB));
+        return sap.length(synsetsMap.get(nounA),synsetsMap.get(nounB));
     }
 
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
@@ -75,7 +77,7 @@ public class WordNet {
         if (isNoun(nounA) == false || isNoun(nounB) == false) {
             throw new IllegalArgumentException("not proper noun");
         }
-        int ancestor = new SAP(digraph).ancestor(synsetsMap.get(nounA),synsetsMap.get(nounB));
+        int ancestor = sap.ancestor(synsetsMap.get(nounA),synsetsMap.get(nounB));
         return synsetsIdMap.get(ancestor);
     }
 
