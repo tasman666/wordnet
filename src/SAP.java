@@ -49,7 +49,7 @@ public class SAP {
 
     private List<Integer> list(int... values) {
         List<Integer> list = new ArrayList<Integer>();
-        for (Integer value : values) {
+        for (int value : values) {
             list.add(value);
         }
         return list;

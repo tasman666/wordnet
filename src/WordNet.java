@@ -1,4 +1,3 @@
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,12 +30,12 @@ public class WordNet {
     }
 
     private void createDigraph(String hypernyms) {
-        In inHypernyms = new In(new File(hypernyms));
+        In inHypernyms = new In(hypernyms);
         digraph = new Digraph(synsetsIdMap.size());
         while (inHypernyms.hasNextLine()) {
             String[] lineValues = inHypernyms.readLine().split(",");
             for (int i = 1; i < lineValues.length; i++) {
-                Integer source = Integer.valueOf(lineValues[0]);
+                int source = Integer.valueOf(lineValues[0]);
                 digraph.addEdge(source, Integer.valueOf(lineValues[i]));
                 synsetsIds.remove(source);
             }
@@ -45,25 +44,25 @@ public class WordNet {
     }
 
     private void loadSynsets(String synsets) {
-        In inSynsets = new In(new File(synsets));
+        In inSynsets = new In(synsets);
         while (inSynsets.hasNextLine()) {
             String[] lineValues = inSynsets.readLine().split(",");
-            Integer synsetId = Integer.valueOf(lineValues[0]);
+            int synsetId = Integer.valueOf(lineValues[0]);
             String[] nounsInLine = lineValues[1].split(" ");
-            for (int i = 0; i < nounsInLine.length; i++) {
-                nouns.add(nounsInLine[i]);
-                initializeSynsetsMap(synsetId, nounsInLine[i]);
+            for (String noun : nounsInLine) {
+                nouns.add(noun);
+                initializeSynsetsMap(synsetId, noun);
             }
             synsetsIdMap.put(synsetId, lineValues[1]);
             synsetsIds.add(synsetId);
         }
     }
 
-    private void initializeSynsetsMap(Integer synsetId, String key) {
+    private void initializeSynsetsMap(int synsetId, String key) {
         if (synsetsMap.containsKey(key)) {
             synsetsMap.get(key).add(synsetId);
         } else {
-            Set set = new HashSet<Integer>();
+            Set<Integer> set = new HashSet<Integer>();
             set.add(synsetId);
             synsetsMap.put(key, set);
         }
@@ -81,7 +80,7 @@ public class WordNet {
 
     // distance between nounA and nounB (defined below)
     public int distance(String nounA, String nounB) {
-        if (isNoun(nounA) == false || isNoun(nounB) == false) {
+        if (!isNoun(nounA) || !isNoun(nounB)) {
             throw new IllegalArgumentException("not proper noun");
         }
         return sap.length(synsetsMap.get(nounA), synsetsMap.get(nounB));
@@ -90,7 +89,7 @@ public class WordNet {
     // a synset (second field of synsets.txt) that is the common ancestor of nounA and nounB
     // in a shortest ancestral path (defined below)
     public String sap(String nounA, String nounB) {
-        if (isNoun(nounA) == false || isNoun(nounB) == false) {
+        if (!isNoun(nounA) || !isNoun(nounB)) {
             throw new IllegalArgumentException("not proper noun");
         }
         int ancestor = sap.ancestor(synsetsMap.get(nounA), synsetsMap.get(nounB));
@@ -100,6 +99,6 @@ public class WordNet {
     // for unit testing of this class
     public static void main(String[] args) {
         WordNet wordNet = new WordNet("files/synsets.txt", "files/hypernyms.txt");
-        System.out.println(wordNet.synsetsIdMap.size());//82,192
+        System.out.println(wordNet.synsetsIdMap.size());
     }
 }
